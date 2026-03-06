@@ -45,6 +45,66 @@ void image_with_additive_factor() {
 	waitKey(0);
 }
 
+void image_with_multiplicative_factor() {
+
+	int additive_factor = 10;
+	int new_pixel_color = 0;
+	Mat img_not_moddified = imread("Images/cameraman.bmp",
+		IMREAD_GRAYSCALE);
+	Mat img = img_not_moddified.clone();
+	for (int i = 0; i < img.rows; i++) {
+		for (int j = 0; j < img.cols; j++) {
+			unsigned char pixel = img.at<uchar>(i, j);
+			new_pixel_color = pixel * additive_factor;
+			if (new_pixel_color > 255) {
+				new_pixel_color = 255;
+			}
+			else if (new_pixel_color < 0) {
+				new_pixel_color = 0;
+			}
+			img.at<uchar>(i, j) = (unsigned char)new_pixel_color;
+		}
+	}
+	imshow("image with multiplicative value", img);
+	imshow("image without multiplicative value", img_not_moddified);
+
+	imwrite("Images/cameraman_multiplicative_value.bmp", img);
+
+	waitKey(0);
+}
+
+
+void color_pixel(uchar R, uchar G, uchar B, Vec3b &pixel) {
+	pixel[0] = B;
+	pixel[1] = G;
+	pixel[2] = R;
+}
+
+void image_4_squares() {
+	Mat four_squares(256, 256, CV_8UC3);
+
+	for (int i = 0; i < four_squares.rows/2 - 1; i++) {
+		for (int j = 0; j < four_squares.cols/2 - 1; j++) {
+			Vec3b pixel_top_left = four_squares.at<Vec3b>(i, j);
+			Vec3b pixel_top_right = four_squares.at<Vec3b>(i, j + four_squares.cols / 2);
+			Vec3b pixel_bot_left = four_squares.at<Vec3b>(i + four_squares.rows/2, j);
+			Vec3b pixel_bot_right = four_squares.at<Vec3b>(i + four_squares.rows / 2, j + four_squares.cols / 2);
+
+			pixel_top_left = Vec3b(255, 255, 255);
+			pixel_top_right = Vec3b(0, 0, 255);
+			pixel_bot_right = Vec3b(255, 0, 0);
+			pixel_bot_left = Vec3b(0, 255, 255);
+
+			four_squares.at<Vec3b>(i, j) = pixel_top_left;
+			four_squares.at<Vec3b>(i, j + four_squares.cols / 2) = pixel_top_right;
+			four_squares.at<Vec3b>(i + four_squares.rows / 2, j) = pixel_bot_left;
+			four_squares.at<Vec3b>(i + four_squares.rows / 2, j + four_squares.cols / 2) = pixel_bot_right;
+		}
+	}
+
+	imshow("image with multiplicative value", four_squares);
+	waitKey(0);
+}
 
 void testOpenImage()
 {
@@ -489,6 +549,8 @@ int main()
 		printf(" 11 - Snap frame from live video\n");
 		printf(" 12 - Mouse callback demo\n");
 		printf(" 13 - Image with additive factor\n");
+		printf(" 14 - Image with multiplicative factor\n");
+		printf(" 15 - Four squares\n");
 		printf(" 0 - Exit\n\n");
 		printf("Option: ");
 		scanf("%d",&op);
@@ -532,6 +594,12 @@ int main()
 				break;
 			case 13:
 				image_with_additive_factor();
+				break;
+			case 14: 
+				image_with_multiplicative_factor();
+				break;
+			case 15:
+				image_4_squares();
 				break;
 		}
 	}
