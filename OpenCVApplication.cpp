@@ -7,6 +7,45 @@
 
 wchar_t* projectPath;
 
+//what I have added
+void negative_image() {
+	Mat img = imread("Images/cameraman.bmp",
+		IMREAD_GRAYSCALE);
+	for (int i = 0; i < img.rows; i++) {
+		for (int j = 0; j < img.cols; j++) {
+			img.at<uchar>(i, j) = 255 - img.at<uchar>(i, j);
+		}
+	}
+	imshow("negative image", img);
+	waitKey(0);
+}
+
+void image_with_additive_factor() {
+
+	int additive_factor = 100;
+	int new_pixel_color = 0;
+	Mat img_not_moddified = imread("Images/cameraman.bmp",
+		IMREAD_GRAYSCALE);
+	Mat img = img_not_moddified.clone();
+	for (int i = 0; i < img.rows; i++) {
+		for (int j = 0; j < img.cols; j++) {
+			unsigned char pixel = img.at<uchar>(i, j);
+			new_pixel_color = pixel + additive_factor;
+			if (new_pixel_color > 255) {
+				new_pixel_color = 255;
+			}
+			else if (new_pixel_color < 0) {
+				new_pixel_color = 0;
+			}
+			img.at<uchar>(i, j) = (unsigned char)new_pixel_color;
+		}
+	}
+	imshow("image with additive value", img);
+	imshow("image without additive value", img_not_moddified);
+	waitKey(0);
+}
+
+
 void testOpenImage()
 {
 	char fname[MAX_PATH];
@@ -449,6 +488,7 @@ int main()
 		printf(" 10 - Edges in a video sequence\n");
 		printf(" 11 - Snap frame from live video\n");
 		printf(" 12 - Mouse callback demo\n");
+		printf(" 13 - Image with additive factor\n");
 		printf(" 0 - Exit\n\n");
 		printf("Option: ");
 		scanf("%d",&op);
@@ -489,6 +529,9 @@ int main()
 				break;
 			case 12:
 				testMouseClick();
+				break;
+			case 13:
+				image_with_additive_factor();
 				break;
 		}
 	}
